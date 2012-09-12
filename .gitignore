@@ -1,4 +1,4 @@
-Debug/
+bin/
 obj/
 *.user
 *.userprefs
