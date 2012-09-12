@@ -74,6 +74,11 @@
     <PostBuildEvent>$(SolutionDir)/lib/ILRepack.exe $(TargetDir)$(TargetFileName)_ /out:$(TargetDir)$(TargetFileName) $(TargetDir)BouncyCastle.Crypto.dll $(TargetDir)Craft.Net.Data.dll $(TargetDir)Craft.Net.Server.dll $(TargetDir)Ionic.Zip.Reduced.dll $(TargetDir)LibNbt.dll</PostBuildEvent>
     <PostBuildEvent>del $(TargetDir)$(TargetFileName)_ $(TargetDir)*.dll $(TargetDir)*.config $(TargetDir)*.manifest $(TargetDir)*.pdb</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'And'$(OS)'!='Windows_NT'">
+    <PostBuildEvent>mv $(TargetDir)$(TargetFileName) $(TargetDir)$(TargetFileName)_</PostBuildEvent>
+    <PostBuildEvent>mono $(SolutionDir)/lib/ILRepack.exe $(TargetDir)$(TargetFileName)_ /out:$(TargetDir)$(TargetFileName) $(TargetDir)BouncyCastle.Crypto.dll $(TargetDir)Craft.Net.Data.dll $(TargetDir)Craft.Net.Server.dll $(TargetDir)Ionic.Zip.Reduced.dll $(TargetDir)LibNbt.dll</PostBuildEvent>
+  <PostBuildEvent>rm -f $(TargetDir)$(TargetFileName)_ $(TargetDir)*.dll $(TargetDir)*.config $(TargetDir)*.manifest $(TargetDir)*.pdb</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
