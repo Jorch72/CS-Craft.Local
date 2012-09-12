@@ -28,6 +28,17 @@ Exits the server.
 
 *none*
 
+## Commands
+
+Craft.Local has certain commands available to players:
+
+* /exit: Exits the server. Only usable by the first player to connect.
+
+* /publish: Publishes the server for LAN play. Only usable by the first player to connect.
+
+The commands from [this page](http://www.minecraftwiki.net/wiki/Cheats) are available if cheats are enabled in level.dat or
+when enabled by Craft.Local.Open. *Note: None of these commands have been added, but they are planned*
+
 ## Building from Source
 
 On Windows, add "C:\Windows\Microsoft.NET\Framework\v4.0.30319" to your %PATH% and run this:

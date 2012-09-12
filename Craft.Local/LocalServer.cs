@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using Craft.Net.Server;
 using Craft.Net.Server.Events;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Craft.Local
 {
@@ -15,7 +17,7 @@ namespace Craft.Local
 
         public LocalServer(IPEndPoint endPoint) : base(endPoint)
         {
-            this.ChatMessage += OnChatMessage;
+            ChatMessage += OnChatMessage;
         }
 
         private void OnChatMessage(object sender, ChatMessageEventArgs chatMessageEventArgs)
@@ -31,6 +33,9 @@ namespace Craft.Local
                     case "exit":
                         Program.ExitReset.Set();
                         break;
+                    case "publish":
+                        OpenLocalServer();
+                        break;
                 }
             }
         }
@@ -38,12 +43,28 @@ namespace Craft.Local
         public void OpenLocalServer()
         {
             int port = ((IPEndPoint)Socket.LocalEndPoint).Port;
-            Socket.Shutdown(SocketShutdown.Both);
-            Socket.Close();
             Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Socket.Bind(new IPEndPoint(IPAddress.Any, port));
             Socket.Listen(10);
             Socket.BeginAccept(AcceptConnectionAsync, null);
+
+            var thread = new Thread(SendLocalPings);
+            thread.Start();
+        }
+
+        private void SendLocalPings()
+        {
+            UdpClient client = new UdpClient();
+            client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            var entry = Dns.GetHostEntry(Dns.GetHostName());
+            var address = entry.AddressList.FirstOrDefault(i => i.AddressFamily == AddressFamily.InterNetwork);
+            while (true)
+            {
+                byte[] buf = Encoding.Default.GetBytes("[MOTD]" + MotD + "[/MOTD][AD]" + address + ":" +
+                    ((IPEndPoint)Socket.LocalEndPoint).Port + "[/AD]");
+                client.Client.SendTo(buf, new IPEndPoint(IPAddress.Parse("224.0.2.60"), 4445));
+                Thread.Sleep(1500);
+            }
         }
     }
 }
