@@ -1,12 +1,14 @@
 # Craft.Local
 
-Craft.Net-powered local server for playing singleplayer games on Craft.Net.
+Craft.Net-powered local server for playing singleplayer games on Craft.Net. Craft.Local supports Minecraft 12w36a.
 
 ## Usage
 
-    Craft.Local.exe port path-to-level.dat
+    Craft.Local.exe path-to-level.dat [port]
 
-Starts up a local server on 127.0.0.1:port with the specified world.
+Starts up a local server on 127.0.0.1:port with the specified world.  If you don't specify a port, the first
+available port will be used and output to stdout as a string (i.e. "12345"). You can also use a relative path
+and Craft.Local will use ~/.minecraft/[relative path].
 
 ## Plugin channels
 

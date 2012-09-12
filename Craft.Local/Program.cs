@@ -20,8 +20,15 @@ namespace Craft.Local
 
         static void Main(string[] args)
         {
-            int port = int.Parse(args[0]);
-            string level = args[1];
+            int port = 0;
+            if (args.Length == 2)
+                port = int.Parse(args[1]);
+            string level = args[0];
+            if (!Path.IsPathRooted(level))
+            {
+                level = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                                     ".minecraft", "saves", level);
+            }
 
             ExitReset = new AutoResetEvent(false);
 
@@ -30,7 +37,9 @@ namespace Craft.Local
             server.RegisterPluginChannel(new ExitPluginChannel());
             server.AddLevel(new Level(new FlatlandGenerator(), Path.GetDirectoryName(level))); // TODO: Vanilla generator
             server.PlayerLoggedIn += ServerOnPlayerLoggedIn;
+            server.OnlineMode = false;
             server.Start();
+            Console.WriteLine(((IPEndPoint)server.Socket.LocalEndPoint).Port);
 
             ExitReset.WaitOne();
         }
