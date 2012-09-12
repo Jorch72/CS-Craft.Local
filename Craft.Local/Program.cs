@@ -29,6 +29,8 @@ namespace Craft.Local
                 level = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                                      ".minecraft", "saves", level);
             }
+            if (!level.EndsWith(".dat"))
+                level = Path.Combine(level, "level.dat");
 
             ExitReset = new AutoResetEvent(false);
 
