@@ -14,10 +14,12 @@ namespace Craft.Local
     public class LocalServer : MinecraftServer
     {
         public bool EnableCheats { get; set; }
+        public bool LanMode { get; private set; }
 
         public LocalServer(IPEndPoint endPoint) : base(endPoint)
         {
             ChatMessage += OnChatMessage;
+            LanMode = false;
         }
 
         private void OnChatMessage(object sender, ChatMessageEventArgs chatMessageEventArgs)
@@ -50,6 +52,8 @@ namespace Craft.Local
 
             var thread = new Thread(SendLocalPings);
             thread.Start();
+
+            LanMode = true;
         }
 
         private void SendLocalPings()

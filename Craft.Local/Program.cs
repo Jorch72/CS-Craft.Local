@@ -9,12 +9,14 @@ using Craft.Net.Data.Generation;
 using Craft.Net.Server;
 using System.Threading;
 using Craft.Net.Server.Events;
+using Craft.Net.Server.Packets;
 
 namespace Craft.Local
 {
     internal class Program
     {
-        public static AutoResetEvent ExitReset;
+        public static AutoResetEvent ExitReset { get; set; }
+        public static string HostPlayerName { get; private set; }
 
         private static LocalServer server;
 
@@ -39,11 +41,13 @@ namespace Craft.Local
             server.RegisterPluginChannel(new ExitPluginChannel());
             server.AddLevel(new Level(new FlatlandGenerator(), Path.GetDirectoryName(level))); // TODO: Vanilla generator
             server.PlayerLoggedIn += ServerOnPlayerLoggedIn;
+            server.PlayerLoggedOut += ServerOnPlayerLoggedOut; 
             server.OnlineMode = false;
             server.Start();
             Console.WriteLine(((IPEndPoint)server.Socket.LocalEndPoint).Port);
 
             ExitReset.WaitOne();
+            server.Stop();
         }
 
         private static bool firstPlayerSet = false;
@@ -53,6 +57,13 @@ namespace Craft.Local
                 return;
             firstPlayerSet = true;
             server.MotD = playerLogInEventArgs.Username + " - " + server.DefaultLevel.Name;
+            HostPlayerName = playerLogInEventArgs.Username;
+        }
+
+        private static void ServerOnPlayerLoggedOut(object sender, PlayerLogInEventArgs playerLogInEventArgs)
+        {
+            if (playerLogInEventArgs.Username == HostPlayerName)
+                ExitReset.Set();
         }
     }
 }
