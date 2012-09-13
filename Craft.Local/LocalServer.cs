@@ -70,6 +70,7 @@ namespace Craft.Local
             client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             var entry = Dns.GetHostEntry(Dns.GetHostName());
             var address = entry.AddressList.FirstOrDefault(i => i.AddressFamily == AddressFamily.InterNetwork);
+            SendChat("Local game hosted on " + address + ":" + ((IPEndPoint)Socket.LocalEndPoint).Port);
             while (true)
             {
                 byte[] buf = Encoding.Default.GetBytes("[MOTD]" + MotD + "[/MOTD][AD]" + address + ":" +
