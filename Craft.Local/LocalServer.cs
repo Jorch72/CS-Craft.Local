@@ -50,12 +50,20 @@ namespace Craft.Local
             Socket.Listen(10);
             Socket.BeginAccept(AcceptConnectionAsync, null);
 
-            var thread = new Thread(SendLocalPings);
-            thread.Start();
+            PingThread = new Thread(SendLocalPings);
+            PingThread.Start();
 
             LanMode = true;
         }
 
+        public void StopLocalServer()
+        {
+            // Note: doesn't stop accepting connections, simply stops broadcasting
+            if (LanMode)
+                PingThread.Abort();
+        }
+
+        private Thread PingThread;
         private void SendLocalPings()
         {
             UdpClient client = new UdpClient();

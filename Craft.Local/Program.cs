@@ -47,6 +47,7 @@ namespace Craft.Local
             Console.WriteLine(((IPEndPoint)server.Socket.LocalEndPoint).Port);
 
             ExitReset.WaitOne();
+            server.StopLocalServer();
             server.Stop();
         }
 
