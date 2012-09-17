@@ -73,7 +73,7 @@ namespace Craft.Local
             SendChat("Local game hosted on " + address + ":" + ((IPEndPoint)Socket.LocalEndPoint).Port);
             while (true)
             {
-                byte[] buf = Encoding.Default.GetBytes("[MOTD]" + MotD + "[/MOTD][AD]" + address + ":" +
+                byte[] buf = Encoding.Default.GetBytes("[MOTD]" + Settings.MotD + "[/MOTD][AD]" + address + ":" +
                     ((IPEndPoint)Socket.LocalEndPoint).Port + "[/AD]");
                 client.Client.SendTo(buf, new IPEndPoint(IPAddress.Parse("224.0.2.60"), 4445));
                 Thread.Sleep(1500);

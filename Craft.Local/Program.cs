@@ -42,7 +42,7 @@ namespace Craft.Local
             server.AddLevel(new Level(new FlatlandGenerator(), Path.GetDirectoryName(level))); // TODO: Vanilla generator
             server.PlayerLoggedIn += ServerOnPlayerLoggedIn;
             server.PlayerLoggedOut += ServerOnPlayerLoggedOut; 
-            server.OnlineMode = false;
+            server.Settings.OnlineMode = false;
             server.Start();
             Console.WriteLine(((IPEndPoint)server.Socket.LocalEndPoint).Port);
 
@@ -57,7 +57,7 @@ namespace Craft.Local
             if (firstPlayerSet)
                 return;
             firstPlayerSet = true;
-            server.MotD = playerLogInEventArgs.Username + " - " + server.DefaultLevel.Name;
+            server.Settings.MotD = playerLogInEventArgs.Username + " - " + server.DefaultLevel.Name;
             HostPlayerName = playerLogInEventArgs.Username;
         }
 
