@@ -1,6 +1,6 @@
 # Craft.Local
 
-Craft.Net-powered local server for playing singleplayer games on Craft.Net. Craft.Local supports Minecraft 12w37a.
+Craft.Net-powered local server for playing singleplayer games on Craft.Net. Craft.Local supports Minecraft 1.5.1.
 
 ## Usage
 
