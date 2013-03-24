@@ -44,11 +44,10 @@ namespace Craft.Local
 
         public void OpenLocalServer()
         {
-            int port = ((IPEndPoint)Socket.LocalEndPoint).Port;
-            Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Socket.Bind(new IPEndPoint(IPAddress.Any, port));
-            Socket.Listen(10);
-            Socket.BeginAccept(AcceptConnectionAsync, null);
+            int port = ((IPEndPoint)Listener.Server.LocalEndPoint).Port;
+            Listener = new TcpListener(new IPEndPoint(IPAddress.Any, port));
+            Listener.Start(10);
+            Listener.BeginAcceptTcpClient(AcceptConnectionAsync, null);
 
             PingThread = new Thread(SendLocalPings);
             PingThread.Start();
@@ -70,11 +69,11 @@ namespace Craft.Local
             client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             var entry = Dns.GetHostEntry(Dns.GetHostName());
             var address = entry.AddressList.FirstOrDefault(i => i.AddressFamily == AddressFamily.InterNetwork);
-            SendChat("Local game hosted on " + address + ":" + ((IPEndPoint)Socket.LocalEndPoint).Port);
+            SendChat("Local game hosted on " + address + ":" + ((IPEndPoint)Listener.Server.LocalEndPoint).Port);
             while (true)
             {
                 byte[] buf = Encoding.Default.GetBytes("[MOTD]" + Settings.MotD + "[/MOTD][AD]" + address + ":" +
-                    ((IPEndPoint)Socket.LocalEndPoint).Port + "[/AD]");
+                    ((IPEndPoint)Listener.Server.LocalEndPoint).Port + "[/AD]");
                 client.Client.SendTo(buf, new IPEndPoint(IPAddress.Parse("224.0.2.60"), 4445));
                 Thread.Sleep(1500);
             }

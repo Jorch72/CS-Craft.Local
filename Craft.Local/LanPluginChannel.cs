@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Craft.Net.Server;
 using Craft.Net.Data;
+using Craft.Net;
 
 namespace Craft.Local
 {

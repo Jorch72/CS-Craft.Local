@@ -9,7 +9,6 @@ using Craft.Net.Data.Generation;
 using Craft.Net.Server;
 using System.Threading;
 using Craft.Net.Server.Events;
-using Craft.Net.Server.Packets;
 
 namespace Craft.Local
 {
@@ -44,9 +43,10 @@ namespace Craft.Local
             server.PlayerLoggedOut += ServerOnPlayerLoggedOut; 
             server.Settings.OnlineMode = false;
             server.Start();
-            Console.WriteLine(((IPEndPoint)server.Socket.LocalEndPoint).Port);
+            Console.WriteLine(((IPEndPoint)server.Listener.Server.LocalEndPoint).Port);
 
             ExitReset.WaitOne();
+            server.DefaultLevel.Save();
             server.StopLocalServer();
             server.Stop();
         }
@@ -59,6 +59,8 @@ namespace Craft.Local
             firstPlayerSet = true;
             server.Settings.MotD = playerLogInEventArgs.Username + " - " + server.DefaultLevel.Name;
             HostPlayerName = playerLogInEventArgs.Username;
+            server.DefaultLevel.PlayerName = HostPlayerName;
+            server.DefaultLevel.Save();
         }
 
         private static void ServerOnPlayerLoggedOut(object sender, PlayerLogInEventArgs playerLogInEventArgs)
